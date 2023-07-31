@@ -1,0 +1,83 @@
+.page-wrapper {
+    display: flex;
+    align-items: center;
+    margin-top: 100px;
+}
+
+.content {
+    margin: 20px 50px;
+    width: calc(90%+500px);  /* Assuming your sidebar width is 240px */
+}
+
+.page-title {
+    font-size: 32px;
+    font-weight: bold;
+    text-align: center;
+}
+
+table {
+    border-collapse: collapse;
+    align-items: center;
+    margin-top: 80px;
+    margin-left: 50px;
+    width: 70%;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+th {
+    background-color: #f2f2f2;
+    color: black;
+}
+
+form {
+    /* Add your custom styles for the form */
+    display: flex;
+    flex-wrap: wrap; /* Allow the elements to wrap when the width is limited */
+    max-width: 400px;
+  }
+  
+  .form-group {
+    /* Add your custom styles for each form group */
+    flex: 1 1 100px; /* Grow and shrink to fill available space, with a minimum of 200px */
+  }
+  
+  label {
+    /* Add your custom styles for the labels */
+    font-weight: bold;
+    display: block; /* Make the labels block-level to stack them on top of the inputs */
+  }
+
+  input[type="date"] {
+    /* Add your custom styles for the date input */
+    width: 120%;
+    padding: 8px;
+    border: 1px solid #ccc;
+  }
+  
+  input,
+  select {
+    /* Add your custom styles for the input fields and select dropdown */
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+  }
+  
+  button {
+    /* Add your custom styles for the submit button */
+    width: 500px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    /* Add your custom styles for the button hover state */
+    background-color: #0056b3;
+  }

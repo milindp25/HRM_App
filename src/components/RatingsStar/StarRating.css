@@ -1,0 +1,21 @@
+/* StarRating.css */
+.star-rating {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .star {
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  .star:hover,
+  .star.active {
+    color: gold;
+  }
+  
+  .star:not(:last-child) {
+    margin-right: 5px;
+  }
+  

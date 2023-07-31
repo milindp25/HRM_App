@@ -1,0 +1,23 @@
+.page-wrapper {
+    display: flex;
+    flex-direction: row;
+}
+
+.navbar-sidebar-wrapper {
+    display: flex;
+    flex-direction: row;
+}
+
+.content {
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.header {
+    font-size: 2em;
+    font-weight: bold;
+    margin-bottom: 20px;
+}

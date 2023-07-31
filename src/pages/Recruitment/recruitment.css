@@ -1,0 +1,43 @@
+.page-wrapper {
+    display: flex;
+    align-items: center;
+    margin-top: 100px;
+}
+
+.content {
+    margin: 20px 50px;
+    width: calc(90%+500px);  /* Assuming your sidebar width is 240px */
+}
+
+.page-title {
+    font-size: 32px;
+    font-weight: bold;
+    text-align: center;
+}
+
+table {
+    border-collapse: collapse;
+    align-items: center;
+    margin-top: 80px;
+    margin-left: 50px;
+    width: 70%;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+th {
+    background-color: #f2f2f2;
+    color: black;
+}
+input{
+    width:100%;
+}
+button{
+    margin-left: 10px;
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
