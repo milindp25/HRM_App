@@ -1,35 +1,18 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useTable } from 'react-table';
 import Navbar from '../../components/Navbar/Navbar';
-import './approveExpense.css'; // Create and import your custom CSS file for the page (optional).
-import Sidebar1 from '../../components/Navbar/Sidebar1/Sidebar1';
+import Sidebar from '../../components/Sidebar/Sidebar';
+import './viewExpense.css';
 import { publicRequest } from '../../Helper/ApiRequest';
+import Sidebar1 from '../../components/Navbar/Sidebar1/Sidebar1';
 import { useSelector } from 'react-redux';
 
-const ApproveExpensesPage = () => {
-
-  const user = useSelector(state => state.user.currentUser);
+const ViewTeamExpensesPage = () => {
   const [data, setData] = useState([]);
 
-  const approveExpense = async (expenseId) => {
-    // Here, you can handle the logic to approve the expense and update the status to 'APR'.
-    // For this example, we will simply update the status in the data array.
-    setData((prevData) =>
-      prevData.map((expense) =>
-        expense.expenseId === expenseId ? { ...expense, status: 'APR' } : expense
-      )
-    );
-    try {
-      const resp = await publicRequest.post(`/employee/updateExpense?id=${expenseId}`);    
-    // Show an alert indicating that the expense has been approved.
-    alert(`Expense ID: ${expenseId} has been approved.`);
-    } catch (err) {
-      console.error('Error updating data:', err);
-      throw err;
-    }
+  const user = useSelector(state => state.user.currentUser);
 
-  };
-
+  // Make the API call only once when the component mounts
   useEffect(() => {
     const getExpenses = async () => {
       try {
@@ -101,16 +84,7 @@ const ApproveExpensesPage = () => {
       accessor: 'status',
       Cell: ({ value }) => getFancyStatus(value),
     },
-    {
-      Header: 'Action',
-      Cell: ({ row }) =>
-        row.original.status === 'PND' ? (
-          <button onClick={() => approveExpense(row.original.expenseId)}>Approve</button>
-        ) : null,
-    },
-  ], []);
-
-  const filteredData = useMemo(() => data.filter((item) => item.status === 'PND'), [data]);
+  ], [data]);
 
   const {
     getTableProps,
@@ -118,7 +92,7 @@ const ApproveExpensesPage = () => {
     headerGroups,
     rows,
     prepareRow,
-  } = useTable({ columns, data: filteredData });
+  } = useTable({ columns, data });
 
   return (
     <>
@@ -128,7 +102,7 @@ const ApproveExpensesPage = () => {
       <div className="page-wrapper">
         <div className="content">
           <h2 className="page-title" style={{ marginBottom: '50px' }}>
-            Approve Expenses
+            View Expenses
           </h2>
 
           <table {...getTableProps()} style={{ margin: 'auto' }}>
@@ -158,6 +132,6 @@ const ApproveExpensesPage = () => {
       </div>
     </>
   );
-};
+}
 
-export default ApproveExpensesPage;
+export default ViewTeamExpensesPage;

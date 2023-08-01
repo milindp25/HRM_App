@@ -4,16 +4,20 @@ import Navbar from '../../components/Navbar/Navbar';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import './viewExpense.css';
 import { publicRequest } from '../../Helper/ApiRequest';
+import Sidebar1 from '../../components/Navbar/Sidebar1/Sidebar1';
+import { useSelector } from 'react-redux';
 
 const ViewExpensesPage = () => {
   const [data, setData] = useState([]);
+
+  const user = useSelector(state => state.user.currentUser);
 
   // Make the API call only once when the component mounts
   useEffect(() => {
     const getExpenses = async () => {
       try {
         // Replace 'your-api-endpoint' with the actual endpoint for expenses data
-        const resp = await publicRequest.get(`/employee/getExpenses?id=1`);
+        const resp = await publicRequest.get(`/employee/getExpenses?id=${user.employee_id}`);
         console.log(resp);
 
         const processedData = resp.data.map((item) => ({

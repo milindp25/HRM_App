@@ -61,7 +61,7 @@ const Sidebar1 = () => {
               <span>Provide Employee Performance</span>
             </li>
           </Link>
-          <Link to="/viewexpense" style={{ textDecoration: "none" }}>
+          <Link to="/viewTeamExpense" style={{ textDecoration: "none" }}>
             <li>
               <AccountBalanceOutlinedIcon className="icon" />
               <span>View Team Expenses</span>
@@ -73,10 +73,10 @@ const Sidebar1 = () => {
               <span>Approve Expense</span>
             </li>
           </Link>
-          <Link to="/viewpayroll" style={{ textDecoration: "none" }}>
+          <Link to="/viewEmployeeStats" style={{ textDecoration: "none" }}>
           <li>
             <SettingsApplicationsIcon className="icon" />
-            <span>View Payroll</span>
+            <span>Department Stats</span>
           </li>
           </Link>
           <p className="title">USER</p>

@@ -19,6 +19,8 @@ import EmployeePerformancePage from './pages/AddEmployeePerformance/AddEmployeeP
 import ManagerPage from './pages/Manager/Manager';
 import ApproveExpensesPage from './pages/ApproveExpense/ApproveExpense';
 import {  useSelector } from "react-redux";
+import ViewTeamExpensesPage from './pages/ViewTeamExpenses/ViewTeamExpense';
+import ViewEmployeeStatsPage from './pages/EmployeeStats/EmployeeStatsPage';
 
 
 
@@ -55,6 +57,8 @@ const App = () => {
         <Route path="employeeperformance" element={<EmployeePerformancePage />} />
         <Route path="/manager" element={<ManagerPage />} />
         <Route path="/approveexpense" element={<ApproveExpensesPage />} />
+        <Route path="/viewTeamExpense" element={<ViewTeamExpensesPage />} />
+        <Route path="/viewEmployeeStats" element={<ViewEmployeeStatsPage />} />
         </Route>
       </Routes>
     </Router>

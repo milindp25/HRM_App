@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Navbar from '../../components/Navbar/Navbar';
 import './employeePerformance.css';
 import StarRatings from 'react-star-ratings';
 import Sidebar1 from '../../components/Navbar/Sidebar1/Sidebar1';
+import { publicRequest } from '../../Helper/ApiRequest';
+import { useSelector } from 'react-redux';
 
 const employeesData = [
   { id: 1, name: 'John Doe' },
@@ -15,11 +17,13 @@ const EmployeePerformance = () => {
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [employeeId, setEmployeeId] = useState('');
   const [employeeName, setEmployeeName] = useState('');
-  const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [rating, setRating] = useState(0);
   const [comments, setComments] = useState('');
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [filteredOptions, setFilteredOptions] = useState([]);
+  const [employees,setEmployees] = useState([]);
+  const user = useSelector(state => state.user.currentUser);
 
   const handleEmployeeSelect = (employee) => {
     setSelectedEmployee(employee);
@@ -28,60 +32,73 @@ const EmployeePerformance = () => {
     setIsPopupOpen(false);
   };
 
-  const handleSubmit = () => {
-    // Here, you can handle the logic to submit the performance data to your data or database.
-    // For example, you can show a pop-up with the submitted performance details.
-
-    if (!employeeId || !employeeName || !dateFrom || !dateTo || rating === 0 || !comments) {
-      alert('Please fill in all the required fields.');
-      return;
+  const handleSearchInputChange = (e) => {
+    const filter = e.target.value.toLowerCase();
+    if (filter) {
+      const filteredEmployees = employees.filter((employee) =>
+        employee.name.toLowerCase().includes(filter)
+      );
+      setFilteredOptions(filteredEmployees);
+    } else {
+      setFilteredOptions(employees.slice(0, 5));
     }
-
-    alert(`Performance Submitted:\nEmployee Name: ${employeeName}\nEmployee ID: ${employeeId}\nDate From: ${dateFrom}\nDate To: ${dateTo}\nRatings: ${rating}\nComments: ${comments}`);
-
-    // Reset the input fields
-    setSelectedEmployee(null);
-    setEmployeeId('');
-    setEmployeeName('');
-    setDateFrom('');
-    setDateTo('');
-    setRating(0);
-    setComments('');
   };
 
-  const dropdownOptions = employeesData.map((employee) => (
-    <li key={employee.id} onClick={() => handleEmployeeSelect(employee)}>
+  useEffect(() => {
+    const getEmployees = async () => {
+      try {
+        const resp = await publicRequest.get(`/employee/getEmployeeManaged?id=${user.employee_id}`);
+        setEmployees(resp.data);
+        setFilteredOptions(resp.data);
+      } catch (err) {
+        console.error('Error fetching department data:', err);
+        throw err;
+      }
+    };
+    getEmployees();
+  }, []);
+
+  const dropdownOptions = employees.map((employee) => (
+    <li key={employee.employee_id} onClick={() => handleEmployeeSelect(employee)}>
       <a href="#" className="dropdown-item">
-        {employee.name}
+        {`${employee.first_name} ${employee.last_name}`}
       </a>
     </li>
   ));
 
-  const handleSearchInputChange = (e) => {
-    const filter = e.target.value.toLowerCase();
-    showOptions();
-
-    if (filter) {
-      dropdownOptions.forEach((el) => {
-        const elText = el.textContent.trim().toLowerCase();
-        const isIncluded = elText.includes(filter);
-        el.style.display = isIncluded ? 'flex' : 'none';
-      });
+  const handleSubmit = async (e) => {
+    if (!employeeId || !employeeName || !dateTo || rating === 0 || !comments) {
+      alert('Please fill in all the required fields.');
+      return;
     }
-  };
 
-  const showOptions = () => {
-    dropdownOptions.forEach((el) => {
-      el.style.display = 'flex';
-    });
-  };
+    const performanceData={
+      employee_id : employeeId,
+      date : dateTo,
+      rating : rating,
+      comments : comments
+    }
 
+    try {
+      const response = await publicRequest.post('/employee/addPerformance', { performanceData });
+      alert(`Performance Submitted:\nEmployee Name: ${employeeName}\nEmployee ID: ${employeeId}\nDate To: ${dateTo}\nRatings: ${rating}\nComments: ${comments}`);
+    } catch (error) {
+      alert(`Failed to create employee`);
+      console.error('Login failed:', error);
+    }
+    setSelectedEmployee(null);
+    setEmployeeId('');
+    setEmployeeName('');
+    setDateTo('');
+    setRating(0);
+    setComments('');
+  };
   return (
     <>
       <Navbar />
       <Sidebar1 />
 
-      <div className="page-wrapper">
+           <div className="page-wrapper">
         <div className="content">
           <h2 className="page-title">Employee Performance</h2>
 
@@ -92,7 +109,7 @@ const EmployeePerformance = () => {
                 className="dropdown-toggle hidden-arrow btn btn-primary"
                 type="button"
                 id="navbarDropdownMenuLink"
-                onClick={() => setIsPopupOpen(true)}
+                onClick={() => setIsPopupOpen(!isPopupOpen)}
               >
                 {selectedEmployee ? selectedEmployee.name : 'Select Employee'}
               </button>
@@ -118,10 +135,17 @@ const EmployeePerformance = () => {
                   </div>
                 </li>
                 <li>
-                  <hr className="dropdown-divider" />
+                <hr className="dropdown-divider" />
+              </li>
+              {/* Render the remaining options */}
+              {filteredOptions.map((employee) => (
+                <li key={employee.id} onClick={() => handleEmployeeSelect(employee)}>
+                  <a href="#" className="dropdown-item">
+                    {employee.name}
+                  </a>
                 </li>
-                {dropdownOptions}
-              </ul>
+              ))}
+            </ul>
             </div>
           </div>
 
@@ -146,19 +170,6 @@ const EmployeePerformance = () => {
               disabled
             />
           </div>
-
-          <div className="form-group">
-            <label htmlFor="dateFrom">Date From:</label>
-            <input
-              type="date"
-              id="dateFrom"
-              name="dateFrom"
-              value={dateFrom}
-              onChange={(e) => setDateFrom(e.target.value)}
-              required
-            />
-          </div>
-
           <div className="form-group">
             <label htmlFor="dateTo">Date To:</label>
             <input

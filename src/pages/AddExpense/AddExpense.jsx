@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import Navbar from '../../components/Navbar/Navbar';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import './addExpense.css'; // Create and import your custom CSS file for the page (optional).
+import { useSelector } from 'react-redux';
+import { publicRequest } from '../../Helper/ApiRequest';
 
 const commonExpenseTypes = [
   'Travel',
@@ -12,14 +14,23 @@ const commonExpenseTypes = [
   'Miscellaneous',
 ];
 
+
+
 const AddExpensePage = () => {
+
+    
+  const user = useSelector(state => state.user.currentUser);
   const [expenseData, setExpenseData] = useState({
-    expenseId: '',
     expenseType: '',
     date: '',
     expenseAmount: '',
+    employee_id : user.employee_id,
     status: 'PND', // Default status is 'PND' (Pending) for new expenses.
   });
+
+  const [error, setError] = useState("");
+
+
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -27,16 +38,33 @@ const AddExpensePage = () => {
       ...prevState,
       [name]: value,
     }));
+    setError("");
   };
 
-  const handleAddExpense = () => {
-    // Here, you can handle the logic to add the expense to your data or database.
-    // For example, you can show a pop-up with the added expense details.
-    alert(`Expense Added:\nExpense ID: ${expenseData.expenseId}\nExpense Type: ${expenseData.expenseType}\nDate: ${expenseData.date}\nExpense Amount: ${expenseData.expenseAmount}\nStatus: ${expenseData.status}`);
-
+  const handleAddExpense = async(e) => {
+    if (expenseData.expenseType === '') {
+      setError('Please select an expense type');
+      return;
+    }
+    if (expenseData.date === '') {
+      setError('Please select a date');
+      return;
+    }
+    if (expenseData.expenseAmount === '' || expenseData.expenseAmount <= 0) {
+      setError('Please enter a valid expense amount');
+      return;
+    }
+    try {
+      const response = await publicRequest.post('/employee/addExpense', { expenseData });
+      // Here, you can handle the logic to add the expense to your data or database.
+      // For example, you can show a pop-up with the added expense details.
+      alert(`Expense Added:\nExpense Type: ${expenseData.expenseType}\nDate: ${expenseData.date}\nExpense Amount: ${expenseData.expenseAmount}\nStatus: ${expenseData.status}`);
+    } catch (error) {
+      alert(`Failed to create employee`);
+      console.error('Login failed:', error);
+    }
     // Reset the input fields
     setExpenseData({
-      expenseId: '',
       expenseType: '',
       date: '',
       expenseAmount: '',
@@ -55,17 +83,7 @@ const AddExpensePage = () => {
             Add Expense
           </h2>
 
-          <div className="form-group">
-            <label htmlFor="expenseId">Expense ID:</label>
-            <input
-              type="text"
-              id="expenseId"
-              name="expenseId"
-              value={expenseData.expenseId}
-              onChange={handleChange}
-              required
-            />
-          </div>
+          {error && <p className="error-message">{error}</p>}
 
           <div className="form-group">
             <label htmlFor="expenseType">Expense Type:</label>
